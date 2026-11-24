@@ -31,6 +31,7 @@ public class ReservationServiceImpl implements IReservationService {
     private final IVehiculeRepository vehiculeRepository;
     private final ReservationMapper reservationMapper;
     private final ReservationSubject reservationSubject;
+    private static final String RESERVATION = "Réservation";
 
     @Override
     public ReservationResponseDTO create(ReservationRequestDTO dto) {
@@ -58,7 +59,7 @@ public class ReservationServiceImpl implements IReservationService {
     @Transactional(readOnly = true)
     public ReservationResponseDTO findById(Long id) {
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Réservation", id));
+                .orElseThrow(() -> new ResourceNotFoundException(RESERVATION, id));
         ReservationResponseDTO response = reservationMapper.toDto(reservation);
         response.setTarifEstime(calculerTarif(reservation.getVehicule(), reservation));
         return response;
@@ -79,7 +80,7 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public ReservationResponseDTO update(Long id, ReservationRequestDTO dto) {
         Reservation existant = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Réservation", id));
+                .orElseThrow(() -> new ResourceNotFoundException(RESERVATION, id));
 
         Client client = clientRepository.findById(dto.getClientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Client", dto.getClientId()));
@@ -100,7 +101,7 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public void deleteById(Long id) {
         if (!reservationRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Réservation", id);
+            throw new ResourceNotFoundException(RESERVATION, id);
         }
         reservationRepository.deleteById(id);
     }
@@ -108,7 +109,7 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public void annulerReservation(Long id) {
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Réservation", id));
+                .orElseThrow(() -> new ResourceNotFoundException(RESERVATION, id));
         reservation.setStatut(StatutReservation.ANNULEE);
         reservationRepository.save(reservation);
         reservationSubject.notifierAnnulation(reservation);

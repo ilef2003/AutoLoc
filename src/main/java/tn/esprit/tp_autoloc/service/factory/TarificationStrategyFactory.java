@@ -39,8 +39,8 @@ public class TarificationStrategyFactory {
 
     private boolean estWeekend(Reservation reservation) {
         DayOfWeek jour = reservation.getDateDebut().getDayOfWeek();
-        return jour == DayOfWeek.FRIDAY
-                || jour == DayOfWeek.SATURDAY
-                || jour == DayOfWeek.SUNDAY;
+        return jour.equals(DayOfWeek.FRIDAY)
+                || jour.equals(DayOfWeek.SATURDAY)
+                || jour.equals(DayOfWeek.SUNDAY);
     }
 }

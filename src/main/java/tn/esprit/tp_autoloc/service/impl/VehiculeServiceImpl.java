@@ -22,6 +22,8 @@ public class VehiculeServiceImpl implements IVehiculeService {
     private final IVehiculeRepository vehiculeRepository;
     private final IAgenceRepository agenceRepository;
     private final VehiculeMapper vehiculeMapper;
+    private static final String VEHICULE = "Véhicule";
+    private static final String AGENCE = "Agence";
 
     @Override
     public VehiculeDTO create(VehiculeDTO dto) {
@@ -31,7 +33,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
         Vehicule vehicule = vehiculeMapper.toEntity(dto);
         if (dto.getAgenceId() != null) {
             Agence agence = agenceRepository.findById(dto.getAgenceId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Agence", dto.getAgenceId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(AGENCE, dto.getAgenceId()));
             vehicule.setAgence(agence);
         }
         return vehiculeMapper.toDto(vehiculeRepository.save(vehicule));
@@ -41,7 +43,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
     @Transactional(readOnly = true)
     public VehiculeDTO findById(Long id) {
         Vehicule vehicule = vehiculeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule", id));
+                .orElseThrow(() -> new ResourceNotFoundException(VEHICULE, id));
         return vehiculeMapper.toDto(vehicule);
     }
 
@@ -54,7 +56,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
     @Override
     public VehiculeDTO update(Long id, VehiculeDTO dto) {
         Vehicule existant = vehiculeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule", id));
+                .orElseThrow(() -> new ResourceNotFoundException(VEHICULE, id));
 
         existant.setImmatriculation(dto.getImmatriculation());
         existant.setMarque(dto.getMarque());
@@ -65,7 +67,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
 
         if (dto.getAgenceId() != null) {
             Agence agence = agenceRepository.findById(dto.getAgenceId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Agence", dto.getAgenceId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(AGENCE, dto.getAgenceId()));
             existant.setAgence(agence);
         }
 
@@ -75,7 +77,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
     @Override
     public void deleteById(Long id) {
         if (!vehiculeRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Véhicule", id);
+            throw new ResourceNotFoundException(VEHICULE, id);
         }
         vehiculeRepository.deleteById(id);
     }
@@ -83,9 +85,9 @@ public class VehiculeServiceImpl implements IVehiculeService {
     @Override
     public void affecterVehiculeAAgence(Long vehiculeId, Long agenceId) {
         Vehicule vehicule = vehiculeRepository.findById(vehiculeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule", vehiculeId));
+                .orElseThrow(() -> new ResourceNotFoundException(VEHICULE, vehiculeId));
         Agence agence = agenceRepository.findById(agenceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence", agenceId));
+                .orElseThrow(() -> new ResourceNotFoundException(AGENCE, agenceId));
 
         vehicule.setAgence(agence);
         vehiculeRepository.save(vehicule);
@@ -94,7 +96,7 @@ public class VehiculeServiceImpl implements IVehiculeService {
     @Override
     public void desaffecterVehiculeDeAgence(Long vehiculeId) {
         Vehicule vehicule = vehiculeRepository.findById(vehiculeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule", vehiculeId));
+                .orElseThrow(() -> new ResourceNotFoundException(VEHICULE, vehiculeId));
 
         if (vehicule.getAgence() == null) {
             throw new IllegalArgumentException("Le véhicule n'est rattaché à aucune agence");

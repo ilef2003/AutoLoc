@@ -22,7 +22,7 @@ public class ReservationController {
     private final ReservationRequestValidator reservationRequestValidator;
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody ReservationRequestDTO dto,
+    public ResponseEntity<Object> create(@Valid @RequestBody ReservationRequestDTO dto,
                                     BindingResult result) {
         reservationRequestValidator.validate(dto, result);
 
@@ -48,7 +48,7 @@ public class ReservationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id,
+    public ResponseEntity<Object> update(@PathVariable Long id,
                                     @Valid @RequestBody ReservationRequestDTO dto,
                                     BindingResult result) {
         reservationRequestValidator.validate(dto, result);

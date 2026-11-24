@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class AgenceServiceImpl implements IAgenceService {
+    private static final String AGENCE = "Agence";
 
     private final IAgenceRepository agenceRepository;
     private final AgenceMapper agenceMapper;
@@ -33,7 +34,7 @@ public class AgenceServiceImpl implements IAgenceService {
     @Transactional(readOnly = true)
     public AgenceDTO findById(Long id) {
         Agence agence = agenceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence", id));
+                .orElseThrow(() -> new ResourceNotFoundException(AGENCE, id));
         return agenceMapper.toDto(agence);
     }
 
@@ -46,7 +47,7 @@ public class AgenceServiceImpl implements IAgenceService {
     @Override
     public AgenceDTO update(Long id, AgenceDTO dto) {
         Agence existant = agenceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence", id));
+                .orElseThrow(() -> new ResourceNotFoundException(AGENCE, id));
 
         existant.setNom(dto.getNom());
         existant.setVille(dto.getVille());
@@ -59,7 +60,7 @@ public class AgenceServiceImpl implements IAgenceService {
     @Override
     public void deleteById(Long id) {
         if (!agenceRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Agence", id);
+            throw new ResourceNotFoundException(AGENCE, id);
         }
         agenceRepository.deleteById(id);
     }

@@ -302,5 +302,6 @@ class TpAutolocApplicationTests {
         // Sauvegarde pour tester (si tu voulais juste créer l'objet sans sauvegarder, tu peux enlever cette ligne)
         Agence savedAgence = agenceRepository.save(a);
         System.out.println("Agence sauvegardée avec employés : " + savedAgence);
+        assertNotNull(savedAgence.getIdAgence(), "L'agence sauvegardée doit avoir un ID généré");
     }
 }

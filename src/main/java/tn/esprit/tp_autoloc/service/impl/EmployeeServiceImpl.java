@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class EmployeeServiceImpl implements IEmployeeService {
+    private static final String EMPLOYE = "Employé";
 
     private final IEmployeeRepository employeeRepository;
     private final IAgenceRepository agenceRepository;
@@ -41,7 +42,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Transactional(readOnly = true)
     public EmployeeDTO findById(Long id) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employé", id));
+                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYE, id));
         return employeeMapper.toDto(employee);
     }
 
@@ -54,7 +55,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public EmployeeDTO update(Long id, EmployeeDTO dto) {
         Employee existant = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employé", id));
+                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYE, id));
 
         existant.setNom(dto.getNom());
         existant.setPrenom(dto.getPrenom());
@@ -72,7 +73,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public void deleteById(Long id) {
         if (!employeeRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Employé", id);
+            throw new ResourceNotFoundException(EMPLOYE, id);
         }
         employeeRepository.deleteById(id);
     }
@@ -80,9 +81,9 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public void affecterEmployeeAAgence(Long employeeId, Long agenceId) {
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employé", employeeId));
+                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYE, employeeId));
         Agence agence = agenceRepository.findById(agenceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence", agenceId));
+                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYE, agenceId));
 
         employee.setAgence(agence);
         employeeRepository.save(employee);
@@ -91,7 +92,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public void desaffecterEmployeeDeAgence(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employé", employeeId));
+                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYE, employeeId));
 
         if (employee.getAgence() == null) {
             throw new IllegalArgumentException("L'employé n'est rattaché à aucune agence");
